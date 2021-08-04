@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+		
+		<title>RainCloud</title>
+
+		<!-- Loading third party fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700|" rel="stylesheet" type="text/css">
+		<link href="{{ url_for('static',filename='fonts/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+		<link rel="shortcut icon" href="/static/images/tag_logo.png" type="image/x-icon">  
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<!-- Loading main css file -->
+		<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+		
+		<!--[if lt IE 9]>
+		<script src="{{ url_for('static',filename='js/ie-support/html5.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/ie-support/respond.js') }}"></script>
+		<![endif]-->
+
+	<style>
+.t{
+  color: #009ad8;
+  font-size: 1.7142857143em;
+  font-family: "Roboto", "Open Sans", sans-serif;
+  font-weight: 300;
+}
+.bg{
+  background-color: #262936;
+}
+.piechart {
+  display: inline-block; 
+  width: 100%;
+}
+.pie1 {
+  float: right;
+}
+.detail {
+  float: left;
+}
+	</style>
+	</head>
+
+
+	<body>
+		
+		<div class="site-content">
+			<div class="site-header">
+				<div class="container">
+					<a href="{{ url_for('home')}}" class="branding">
+						<img src="/static/images/logo.png" alt="" class="logo">
+						<div class="logo-type">
+							<h1 class="site-title"><span style="font-size:8mm;color:#ADD8E6">Rain</span><span style="font-size:8mm">Cloud</span></h1>
+							<small class="site-description">Once Driven, Forever Weather</small>
+						</div>
+					</a>
+
+					<!-- Default snippet for navigation -->
+					<div class="main-navigation">
+						<button type="button" class="menu-toggle"><i class="fa fa-bars"></i></button>
+						<ul class="menu">
+							<li class="menu-item"><a href="{{url_for('home')}}">Home</a></li>
+							<li class="menu-item"><a href="{{url_for('news')}}">News</a></li>
+							<li class="menu-item current-menu-item"><a href="{{url_for('forecast')}}">Forecast</a></li>
+							<li class="menu-item"><a href="{{url_for('map')}}">Map</a></li>
+						</ul> <!-- .menu -->
+					</div> <!-- .main-navigation -->
+
+					<div class="mobile-navigation"></div>
+
+				</div>
+			</div> <!-- .site-header -->
+
+			<main class="main-content">
+				<div class="container">
+					<div class="breadcrumb">
+						<a href="{{url_for('home')}}">Home</a>
+						<span>Forecast</span>
+					</div>
+				</div>
+				<p>&nbsp;</p>
+				<div class="hero" data-bg-image="/static/images/banner.png">
+				<div class="container">
+					<form action="{{url_for('forecasting')}} " method="post" class="find-location">
+						<input type="text" name="floc" placeholder="Find your location..." required="required">
+						<input type="submit" value="Find">
+					</form>
+					<p>&nbsp;</p>
+					<h1 class="section-title"><span style="color:#DCDCDC">&nbsp;&nbsp;&nbsp;WEATHER FORECASTING: <span style="color:#F4A460"><u>{{ title }}</u></span></h1>
+				</div>
+				</div>
+				<div class="fullwidth-block">
+					<div class="container">
+						<h2 class="section-title">Temperature Line Graph</h2>
+						<div class="t">The graph below represents minimum-maximum temperatue within a time interval of 3 hours of 5 days</div>
+					</div>
+					    <div id="curve_chart" style="width: 100%; height: 500px;"></div>
+    						<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    						<script type="text/javascript">
+    						  google.charts.load('current', {'packages':['corechart']});
+    						  google.charts.setOnLoadCallback(drawChart);
+					       	    var i = {{ lchart | safe }};
+						    function drawChart() {
+        					    var data = google.visualization.arrayToDataTable(i);
+
+					            var options = {
+						          curveType: 'function',
+						          legend: { position: 'bottom' },
+							  legendTextStyle: { color: 'white' },
+							  backgroundColor: {stroke:null, fill:'#1e202b', strokeSize: 0},
+							  hAxis: {title: " ", titleTextStyle: {color: '#FFF'}, textStyle:{color: '#FFF'}, gridlines: {color: '#FFFFFF'}},
+							  vAxis: {title: "Temperatue in °C", titleTextStyle: {color: '#FFF'}, textStyle:{color: '#FFF'}, gridlines: {color: '#FFFFFF'}}
+							        };
+	
+					            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+					            chart.draw(data, options);
+					            }
+						    </script>
+						<p>&nbsp;</p>
+				</div>
+				<div class="bg">
+				<div class="fullwidth-block" data-bg-color="#262936">
+						<div class="container">
+						<div class="row">
+						<div class="piechart">
+							<div class="detail">
+								<div>
+									<h2 class="section-title">Air Pollution Distribution</h2>
+									<div class="t">Air Quality Index:&nbsp;&nbsp;{{main}}</div>
+									<p>&nbsp;</p>
+									<h3>Сoncentration of Toxic gases in μg/m3</h3>
+									<table cellpadding = "6" cellspacing = "5"><tr>
+									<td>CO (Carbon monoxide)</td>
+									<td>NO (Nitrogen monoxide)</td></tr>
+									<tr>
+									<td>NO2 (Nitrogen dioxide)</td>
+									<td>O3 (Ozone)</td></tr>
+									<tr>
+									<td>SO2 (Sulphur dioxide)</td>
+									<td>PM2.5 (Fine particles)</td></tr>
+									<td>PM10 (Coarse particulate)</td>
+									<td>NH3 (Ammonia)</td></tr>
+									</table>	
+								</div>
+							</div>
+							<div class="pie1">
+							<div id="piechart" class="pie"></div>
+							</div>
+                            				<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+                            				<script type="text/javascript">
+                            				// Load google charts
+                            				google.charts.load('current', {'packages':['corechart']});
+                            				google.charts.setOnLoadCallback(drawChart);
+
+                            				// Draw the chart and set the chart values
+                            				function drawChart() {
+                              				var data = google.visualization.arrayToDataTable([
+                              				['Particles', 'Values'],
+                              				['CO', {{co}}],
+                              				['NO', {{no}}],
+                              				['NO2', {{no2}}],
+                              				['O3', {{o3}}],
+                              				['SO2', {{so2}}],
+                              				['PM2_5', {{pm2}}],
+                              				['PM10', {{pm10}}],
+                              				['NH3', {{nh3}}],
+                            				]);
+
+                              				// Optional; add a title and set the width and height of the chart
+                              				var options = {backgroundColor: '#262936', is3D: true, 'legend': {textStyle: { color: 'white' }, 'position': 'labeled'},
+                   							'height':300, 'width':700, 'chartArea': {'width': '80%', 'height': '90%'},};
+
+                              				// Display the chart inside the <div> element with id="piechart"
+                              				var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                              				chart.draw(data, options);
+                            				}
+                            				</script>
+						</div>
+                                                </div>
+						</div>
+				</div>
+				</div>	
+				<div>
+				<div class="fullwidth-block">
+					<div class="container">
+						<h2 class="section-title">Humidity and Cloudinees(%) Line Graph</h2>
+						<div class="t">The graph represents percentage of humidity and cloudiness within a time interval of 3 hours of 5 days</div>
+					</div>
+				<div id="chart_div" style="width: 100%; height: 500px;"></div>
+				    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+				    <script type="text/javascript">
+				      google.charts.load('current', {'packages':['corechart']});
+				      google.charts.setOnLoadCallback(drawChart11);
+
+				      function drawChart11() {
+				        var data1 = google.visualization.arrayToDataTable({{ achart | safe }});
+
+				        var options1 = {
+							  curveType: 'function',
+						          legend: { position: 'bottom' },
+							  legendTextStyle: { color: 'white' },
+							  backgroundColor: {stroke:null, fill:'#1e202b', strokeSize: 0},
+							  hAxis: {title: " ", titleTextStyle: {color: '#FFF'}, textStyle:{color: '#FFF'}, gridlines: {color: '#FFFFFF'}},
+							  vAxis: {title: "Percentage %", titleTextStyle: {color: '#FFF'}, textStyle:{color: '#FFF'}, gridlines: {color: '#FFFFFF'}}
+						      };
+
+				        var chart1 = new google.visualization.LineChart(document.getElementById('chart_div'));
+				        chart1.draw(data1, options1);
+				      }
+      
+				    </script>
+				<p>&nbsp;</p>
+				</div>
+				</div>			
+			</main> <!-- .main-content -->
+
+			<footer class="site-footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-8">
+							<form action="#" class="subscribe-form">
+								<input type="text" placeholder="Enter your email to subscribe...">
+								<input type="submit" value="Subscribe">
+							</form>
+						</div>
+						<div class="col-md-3 col-md-offset-1">
+							<div class="social-links">
+								<a href="#"><i class="fa fa-facebook"></i></a>
+								<a href="#"><i class="fa fa-twitter"></i></a>
+								<a href="#"><i class="fa fa-google-plus"></i></a>
+								<a href="#"><i class="fa fa-pinterest"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<p class="colophon">Copyright 2021 RainCloud. All rights reserved</p>
+				</div>
+			</footer> <!-- .site-footer -->
+		</div>
+		
+		<script src="{{ url_for('static',filename='js/jquery-1.11.1.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/plugins.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/app.js') }}"></script>
+		
+	</body>
+
+</html>

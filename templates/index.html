@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+		
+		<title>RainCloud</title>
+
+		<!-- Loading third party fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700|" rel="stylesheet" type="text/css">
+		<link href="{{ url_for('static',filename='fonts/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+		<link rel="shortcut icon" href="/static/images/tag_logo.png" type="image/x-icon">  
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<!-- Loading main css file -->
+		<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+		<script src="https://kit.fontawesome.com/9c34d2f276.js" crossorigin="anonymous"></script>
+		<!--[if lt IE 9]>
+		<script src="{{ url_for('static',filename='js/ie-support/html5.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/ie-support/respond.js') }}"></script>
+		<![endif]-->
+	<style>	
+.cover1 {
+  border-radius: 5px;
+  width: 100%;
+  height: auto;
+  max-width: 100%; 
+}
+.t{
+  color: #009ad8;
+  font-size: 1.7142857143em;
+  font-family: "Roboto", "Open Sans", sans-serif;
+  font-weight: 300;
+}
+.cities {
+  display: inline-block; 
+  width: 100%;
+}
+.right {
+  float: right;
+}
+.left {
+  float: left;
+}
+	</style>
+	</head>
+
+
+	<body>
+		<div class="site-content">
+			<div class="site-header">
+				<div class="container">
+					<a href="{{url_for('home')}} " class="branding">
+						<img src="/static/images/logo.png" alt="" class="logo">
+						<div class="logo-type">
+							<h1 class="site-title"><span style="font-size:8mm;color:#ADD8E6">Rain</span><span style="font-size:8mm">Cloud</span></h1>
+							<small class="site-description">Once Driven, Forever Weather</small>
+						</div>
+					</a>
+
+					<!-- Default snippet for navigation -->
+					<div class="main-navigation">
+						<button type="button" class="menu-toggle"><i class="fa fa-bars"></i></button>
+						<ul class="menu">
+							<li class="menu-item current-menu-item"><a href="{{url_for('home')}}">Home</a></li>
+							<li class="menu-item"><a href="{{url_for('news')}}">News</a></li>
+							<li class="menu-item"><a href="{{url_for('forecast')}}">Forecast</a></li>
+							<li class="menu-item"><a href="{{url_for('map')}}">Map</a></li>
+						</ul> <!-- .menu -->
+					</div> <!-- .main-navigation -->
+
+					<div class="mobile-navigation"></div>
+
+				</div>
+			</div> <!-- .site-header -->
+
+			<div class="hero" data-bg-image="/static/images/banner.png">
+				<div class="container">
+					<form action="{{url_for('location')}} " method="post" class="find-location">
+						<input type="text" name="wloc" placeholder="Find your location..." required="required">
+						<input type="submit" value="Find">
+					</form>
+
+				</div>
+			</div>
+			<div class="forecast-table">
+				<div class="container">
+					<div class="forecast-container">
+						<div class="today forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay()];
+								document.write(n); 
+								</script>
+								</div>
+								<div class="date"><script> document.write(new Date().toDateString()); </script></div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="location">{{name}}</div>
+								<div class="degree">
+									<div class="num">{{temp}}</div>
+									<div class="forecast-icon">
+										<img src="{{ image }}" alt="" width=90>								
+									</div>	
+								</div>
+								<table cellpadding="6" cellspacing="7"><tr>
+								<td><span><i class='fa fa-info-circle' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;{{weather}}</span></td>
+								<td>&nbsp;<span>&nbsp;<i class='fas fa-wind' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;{{speed}}</span></td>
+								<td><span><i class='fas fa-cloud' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;{{cloud}}</span></td>
+								</tr><tr>
+								<td><span><i class='fas fa-weight' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;{{pressure}}</span></td>
+								<td>&nbsp;<span>&nbsp;<i class='fas fa-thermometer-full' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;&nbsp;&nbsp;{{max_temp}}</span></td>
+								<td><span><i class='fas fa-tint' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;&nbsp;&nbsp;{{humidity}}</span></td>
+								</tr><tr>
+								<td><span><i class='far fa-compass' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;{{degree}}</span></td>
+    								<td colspan="2"><span><i class='fas fa-smog' style='font-size:17px;color:grey'></i>&nbsp;&nbsp;{{descrip}}</span></td>
+  								</tr></table>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay() + 1];
+								document.write(n); 
+								</script>
+								</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+									<img src="{{image1}}" alt="" width=48>
+								</div>
+								<div class="degree">{{max1}}</div>
+								<small>{{min1}}</small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay() + 2];
+								document.write(n); 
+								</script>
+								</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+									<img src="{{image2}}" alt="" width=48>
+								</div>
+								<div class="degree">{{max2}}</div>
+								<small>{{min2}}</small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay() + 3];
+								document.write(n); 
+								</script>
+								</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+									<img src="{{image3}}" alt="" width=48>
+								</div>
+								<div class="degree">{{max3}}</div>
+								<small>{{min3}}</small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay() + 4];
+								document.write(n); 
+								</script>
+								</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+									<img src="{{image4}}" alt="" width=48>
+								</div>
+								<div class="degree">{{max4}}</div>
+								<small>{{min4}}</small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay() + 5];
+								document.write(n); 
+								</script>
+								</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+									<img src="{{image5}}" alt="" width=48>
+								</div>
+								<div class="degree">{{max5}}</div>
+								<small>{{min5}}</small>
+							</div>
+						</div>
+						<div class="forecast">
+							<div class="forecast-header">
+								<div class="day">
+								<script> 
+								  var d = new Date();
+								  var weekday = new Array(7);
+								  weekday[0] = "Sunday";
+								  weekday[1] = "Monday";
+								  weekday[2] = "Tuesday";
+								  weekday[3] = "Wednesday";
+								  weekday[4] = "Thursday";
+								  weekday[5] = "Friday";
+								  weekday[6] = "Saturday";
+								  weekday[7] = "Sunday";
+								  weekday[8] = "Monday";
+								  weekday[9] = "Tuesday";
+								  weekday[10] = "Wednesday";
+								  weekday[11] = "Thursday";
+								  weekday[12] = "Friday";
+
+								  var n = weekday[d.getDay() + 6];
+								document.write(n); 
+								</script>
+								</div>
+							</div> <!-- .forecast-header -->
+							<div class="forecast-content">
+								<div class="forecast-icon">
+									<img src="{{image6}}" alt="" width=48>
+								</div>
+								<div class="degree">{{max6}}</div>
+								<small>{{min6}}</small>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<main class="main-content">
+				<div class="fullwidth-block">
+					<div class="container">
+						<h2 class="section-title">Other Cities</h2>
+						<div class="row">
+							<div class="col-md-3 col-sm-6">
+								<div class="live-camera">
+									<figure class="cover"><img class="cover1" src="/static/images/4.png" alt=""></figure>
+									<hr>
+									<div class="cities"><h3 class="location"><div class="left">New York</div><div class="right"><b>{{ny}}</b></div></h3></div>
+									<small class="date">
+									<script>
+									  var rightNow = new Date();
+									  rightNow = rightNow.toLocaleString('en-GB', {hour12: true, timeZone: 'America/New_York' });
+
+									  document.write(rightNow); 
+									</script>
+									</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="live-camera">
+									<figure class="cover"><img class="cover1" src="/static/images/2.png" alt=""></figure>
+									<hr>
+									<div class="cities"><h3 class="location"><div class="left">London</div><div class="right"><b>{{ln}}</b></div></h3></div>
+									<small class="date">
+									<script>
+									  var rightNow = new Date();
+									  rightNow = rightNow.toLocaleString('en-GB', {hour12: true, timeZone: 'Europe/London' });
+
+									  document.write(rightNow); 
+									</script>
+									</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="live-camera">
+									<figure class="cover"><img class="cover1" src="/static/images/3.png" alt=""></figure>
+									<hr>
+									<div class="cities"><h3 class="location"><div class="left">Dubai</div><div class="right"><b>{{db}}</b></div></h3></div>
+									<small class="date">
+									<script>
+									  var rightNow = new Date();
+									  rightNow = rightNow.toLocaleString('en-GB', {hour12: true, timeZone: 'Asia/Dubai' });
+
+									  document.write(rightNow); 
+									</script>
+									</small>
+								</div>
+							</div>
+							<div class="col-md-3 col-sm-6">
+								<div class="live-camera">
+									<figure class="cover"><img class="cover1" src="/static/images/1.png" alt=""></figure>
+									<hr>
+									<div class="cities"><h3 class="location"><div class="left">Tokyo</div><div class="right"><b>{{to}}</b></div></h3></div>
+									<small class="date">
+									<script>
+									  var rightNow = new Date();
+									  rightNow = rightNow.toLocaleString('en-GB', {hour12: true, timeZone: 'Asia/Tokyo' });
+
+									  document.write(rightNow); 
+									</script>
+									</small>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				
+			</main> <!-- .main-content -->
+
+			<footer class="site-footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-8">
+							<form action="#" class="subscribe-form">
+								<input type="text" placeholder="Enter your email to subscribe...">
+								<input type="submit" value="Subscribe">
+							</form>
+						</div>
+						<div class="col-md-3 col-md-offset-1">
+							<div class="social-links">
+								<a href="#"><i class="fa fa-facebook"></i></a>
+								<a href="#"><i class="fa fa-twitter"></i></a>
+								<a href="#"><i class="fa fa-google-plus"></i></a>
+								<a href="#"><i class="fa fa-pinterest"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<p class="colophon">Copyright 2021 RainCloud. All rights reserved</p>
+				</div>
+			</footer> <!-- .site-footer -->
+		</div>
+		
+		<script src="{{ url_for('static',filename='js/jquery-1.11.1.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/plugins.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/app.js') }}"></script>
+		
+	</body>
+
+</html>

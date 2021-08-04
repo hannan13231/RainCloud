@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1">
+		
+		<title>RainCloud</title>
+
+		<!-- Loading third party fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700|" rel="stylesheet" type="text/css">
+		<link href="{{ url_for('static',filename='fonts/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+		<link rel="shortcut icon" href="/static/images/tag_logo.png" type="image/x-icon"> 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ 		<link rel="stylesheet" type="text/css" href="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.36.1/maps/maps.css">
+
+		<!-- Loading main css file -->
+		<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+    		<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.36.1/maps/maps-web.min.js"></script>
+    		<script src="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.36.1/services/services-web.min.js"></script>
+    		<script src="{{ url_for('static',filename='js/currentWeatherData.js') }}"></script>
+		
+		<!--[if lt IE 9]>
+		<script src="{{ url_for('static',filename='js/ie-support/html5.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/ie-support/respond.js') }}"></script>
+		<![endif]-->
+
+<style>
+select option {
+  margin: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+#map { width: 100%; height: 100%; }
+#location {
+    border-radius: 25px;
+    padding: 20px; 
+    width: 240px;
+    height: 40px;
+    border: none;
+    background-color:transparent;  
+    color: #fff;  
+    outline: none;
+}
+#c2{
+    float:right;
+}
+#button1{
+    border: none;
+    background: #009ad8;
+    padding: 10px 20px;
+    border-radius: 30px;
+    color: white;
+}
+</style>
+
+	</head>
+
+
+	<body>
+		
+		<div class="site-content">
+			<div class="site-header">
+				<div class="container">
+					<a href="{{url_for('home')}}" class="branding">
+						<img src="images/logo.png" alt="" class="logo">
+						<div class="logo-type">
+							<h1 class="site-title"><span style="font-size:8mm;color:#ADD8E6">Rain</span><span style="font-size:8mm">Cloud</span></h1>
+							<small class="site-description">Once Driven, Forever Weather</small>
+						</div>
+					</a>
+
+					<!-- Default snippet for navigation -->
+					<div class="main-navigation">
+						<button type="button" class="menu-toggle"><i class="fa fa-bars"></i></button>
+						<ul class="menu">
+							<li class="menu-item"><a href="{{url_for('home')}}">Home</a></li>
+							<li class="menu-item"><a href="{{url_for('news')}}">News</a></li>
+							<li class="menu-item"><a href="{{url_for('forecast')}}">Forecast</a></li>
+							<li class="menu-item current-menu-item"><a href="{{url_for('map')}}">Map</a></li>
+						</ul> <!-- .menu -->
+					</div> <!-- .main-navigation -->
+
+					<div class="mobile-navigation"></div>
+
+				</div>
+			</div> <!-- .site-header -->
+
+			<main class="main-content">
+				<div class="container">
+					<div class="breadcrumb">
+						<a href="{{url_for('home')}}">Home</a>
+						<span>Map</span>
+					</div>
+				</div>
+
+				<div class="fullwidth-block">
+					<div class="container">
+					<div id="controls">
+						<div class="col-md-5">
+							<div class="contact-details" style="width:800px;height:400px;">
+								<div id="map" class="map"></div>
+								
+							</div>
+						</div>
+
+						<div id="c2">
+						
+							<h2 class="section-title">Weather Radar</h2>
+								<br>
+								<div class="row">
+								<div class="country filter-control">
+								<input type="text" placeholder="Your location..." id="location">
+								</div>
+								</div><br>
+								<div class="row">
+								<div class="country filter-control">
+									<label for="">Layer</label>
+									<span class="select control" style="color:blue">
+  									<select onchange="updateLayer(this)" >
+  								          <option value="">None</option>
+  								          <option value="clouds_new">Clouds</option>
+  								          <option value="precipitation_new">Precipitation</option>
+  								          <option value="pressure_new">Pressure</option>
+  								          <option value="wind_new">Wind</option>
+  								          <option value="temp_new">Temperature</option>
+  								        </select>
+  									</span>
+  								</div>
+								</div><br>
+								<div class="row">
+								<div class="country filter-control">
+									<label for="">Units in</label>
+									<span class="select control" style="color:blue">
+									<select onchange="updateUnits(this)" >
+          								<option value="metric">Celcius  ℃</option>
+          								<option value="imperial">Farhnt ℉</option>
+          								</select>
+  								</span>
+  								</div>
+								</div><br>
+								<center><input id="button1" type="submit" value="Search" onclick="findLocation()" ></center>
+								</div>
+								</div>
+						</div>
+					</div>
+				</div>
+				
+			</main> <!-- .main-content -->
+
+			<footer class="site-footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-8">
+							<form action="#" class="subscribe-form">
+								<input type="text" placeholder="Enter your email to subscribe...">
+								<input type="submit" value="Subscribe">
+							</form>
+						</div>
+						<div class="col-md-3 col-md-offset-1">
+							<div class="social-links">
+								<a href="#"><i class="fa fa-facebook"></i></a>
+								<a href="#"><i class="fa fa-twitter"></i></a>
+								<a href="#"><i class="fa fa-google-plus"></i></a>
+								<a href="#"><i class="fa fa-pinterest"></i></a>
+							</div>
+						</div>
+					</div>
+
+					<p class="colophon">Copyright 2021 RainCloud. All rights reserved</p>
+				</div>
+			</footer> <!-- .site-footer -->
+		</div>
+		
+		<script src="{{ url_for('static',filename='js/jquery-1.11.1.min.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/plugins.js') }}"></script>
+		<script src="{{ url_for('static',filename='js/app.js') }}"></script>
+    		<script src="{{ url_for('static',filename='js/weather.js') }}"></script>
+		
+	</body>
+
+</html>
